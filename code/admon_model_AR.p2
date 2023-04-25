@@ -1,0 +1,98 @@
+model {
+  #initial year
+  for(i in SA_countries_initial_year){
+   ln_flows.R[i] ~ dnorm(y[i] +
+		            nu[1]*durationR_2y[i] +
+		            nu[2]*durationR_3y[i] +
+		            alpha[country.R[i]]*reg.proc[i] +
+			    eta[1]*SICREMI_source[i] +
+			    eta[2]*migoff_source[i], tau[quality_data_source[i]])
+   }
+
+  #for the rest of the period
+  for(i in SA_countries){
+    ln_flows.R[i] ~ dnorm(y[i] +
+		            nu[1]*durationR_2y[i] +
+		            nu[2]*durationR_3y[i] +
+		            alpha[country.R[i]]*reg.proc[i] +
+		            omegaR[country.R[i]]*mercosur[i] +
+			    eta[1]*SICREMI_source[i] +
+			    eta[2]*migoff_source[i], tau[quality_data_source[i]])
+    }
+
+  for(i in nonSA_countries){
+    ln_flows.R[i] ~ dnorm(y[i] + 
+		          eta[1]*SICREMI_source[i] +
+                          eta[2]*migoff_source[i], tau[quality_data_source[i]])
+    }
+    
+    ###########################
+    #Prior of true flows
+    ###########################
+    for(t in 1:250) {
+    y[t] ~ dnorm(mu_y[t], tau_y)
+
+    mu_y[t] <- u0[corridor[t]] + beta[1]*cont[t]
+    }
+
+    for(t in 251:5250) {
+    y[t] ~ dnorm(mu_y[t], tau_y)
+    
+
+    mu_y[t] <- u0[corridor[t]] + u1[corridor[t]]*y[t-1] + 
+                beta[1]*cont[t] + beta[2]*ln_popR[t-1] + beta[3]*ln_popS[t-1]
+    }   
+    
+########################################
+### Data model
+########################################  
+# Duration
+nu[1] <- nu0[1]
+nu[2] <- nu0[1] + nu0[2]
+
+for(i in 1:2){
+  nu0[i] ~ dnorm(0, 1)T(,0)
+}
+
+ 
+# Regularisation processes
+for(i in 1:18){
+alpha[i] ~ dnorm(0, 1)}
+
+# Bilateral/multilateral agreements
+for(i in 1:18){
+omegaR[i] ~ dnorm(0, 1)
+}
+
+for(i in 1:2){
+eta[i] ~ dnorm(0, 1)
+}
+
+###########################
+#Prior of MM variables
+###########################
+  for(j in 1:250) { 
+    u0[j] ~ dnorm(0, 14)
+    u1[j] ~ dnorm(0, 14)
+    }
+  
+    tau_y <- 1/pow(sigma_y, 2)
+    sigma_y ~ dgamma(3, 2)
+  
+  
+    for(i in 1:3){
+    beta[i] ~ dnorm(0, 1)  }
+
+ 
+  ###########################################
+  #Prior for dispersion of 'observed' flows
+  ###########################################
+  for(i in 1:4){
+    tau[i] <- 1/pow(sigma[i], 2)
+    sigma[i] ~ dgamma(3, 2)
+  }
+  constraint0 ~ dinterval(tau[1] - tau[2], 0)
+  constraint1 ~ dinterval(tau[2] - tau[3], 0)
+  constraint2 ~ dinterval(tau[3] - tau[4], 0)
+}
+

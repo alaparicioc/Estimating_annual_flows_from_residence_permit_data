@@ -1,0 +1,175 @@
+model {
+  #initial year
+  for(i in SA_countries_initial_year){
+   ln_flows.R[i] ~ dnorm(y[i] +
+		            nu[1]*durationR_2y[i] +
+		            nu[2]*durationR_3y[i] +
+		            alpha[country.R[i]]*reg.proc[i] +
+			    eta[1]*SICREMI_source[i] +
+			    eta[2]*migoff_source[i], tau[quality_data_source[i]])
+   }
+
+  #for the rest of the period
+  for(i in SA_countries){
+    ln_flows.R[i] ~ dnorm(y[i] +
+		            nu[1]*durationR_2y[i] +
+		            nu[2]*durationR_3y[i] +
+		            alpha[country.R[i]]*reg.proc[i] +
+		            omegaR[country.R[i]]*mercosur[i] +
+			    eta[1]*SICREMI_source[i] +
+			    eta[2]*migoff_source[i], tau[quality_data_source[i]])
+    }
+
+  for(i in nonSA_countries){
+    ln_flows.R[i] ~ dnorm(y[i]+ 
+		          eta[1]*SICREMI_source[i] +
+                          eta[2]*migoff_source[i], tau[quality_data_source[i]])
+    }
+    
+    ###########################
+    #Prior of true flows
+    ###########################
+    for(i in 1:5250) {
+    y[i] ~ dnorm(mu_y[i], tau_y)
+    }
+    
+    mu_y <- X %*% b ## expected response
+
+########################################
+### Data model
+########################################  
+# Duration
+nu[1] <- nu0[1]
+nu[2] <- nu0[1] + nu0[2]
+
+for(i in 1:2){
+  nu0[i] ~ dnorm(0, 1)T(,0)
+}
+
+ 
+# Regularisation processes
+for(i in 1:18){
+alpha[i] ~ dnorm(0, 1)}
+
+# Bilateral/multilateral agreements
+for(i in 1:18){
+omegaR[i] ~ dnorm(0, 1)
+}
+
+for(i in 1:2){
+eta[i] ~ dnorm(0, 1)
+}
+
+########################################
+### GAM model
+########################################  
+
+  ### --- hyperprior for fixed effects ---### 
+  for(i in 1:4) { b[i] ~ dnorm(0, 1) }
+
+
+  ### --- hyperprior for random effects ---### 
+  ## prior for s(year)... 
+  b[5:8] ~ dmnorm(zero[5:8],K1) 
+  K1 <- S1[1:4,1:4] * lambda[1]  + S1[1:4,5:8] * lambda[2]
+
+
+  ## prior for s(year):country.R1... 
+  b[9:22] ~ dmnorm(zero[9:22],K2) 
+  K2 <- S2[1:14,1:14] * lambda[3] 
+
+  ## prior for s(year):country.R2... 
+  b[23:36] ~ dmnorm(zero[23:36],K3) 
+  K3 <- S3[1:14,1:14] * lambda[4] 
+
+  ## prior for s(year):country.R3... 
+  b[37:50] ~ dmnorm(zero[37:50],K4) 
+  K4 <- S4[1:14,1:14] * lambda[5] 
+
+  ## prior for s(year):country.R4... 
+  b[51:64] ~ dmnorm(zero[51:64],K5) 
+  K5 <- S5[1:14,1:14] * lambda[6] 
+
+  ## prior for s(year):country.R5... 
+  b[65:78] ~ dmnorm(zero[65:78],K6) 
+  K6 <- S6[1:14,1:14] * lambda[7] 
+
+  ## prior for s(year):country.R6... 
+  b[79:92] ~ dmnorm(zero[79:92],K7) 
+  K7 <- S7[1:14,1:14] * lambda[8] 
+
+  ## prior for s(year):country.R7... 
+  b[93:106] ~ dmnorm(zero[93:106],K8) 
+  K8 <- S8[1:14,1:14] * lambda[9] 
+
+  ## prior for s(year):country.R8... 
+  b[107:120] ~ dmnorm(zero[107:120],K9) 
+  K9 <- S9[1:14,1:14] * lambda[10] 
+
+  ## prior for s(year):country.R9... 
+  b[121:134] ~ dmnorm(zero[121:134],K10) 
+  K10 <- S10[1:14,1:14] * lambda[11] 
+
+  ## prior for s(year):country.R10... 
+  b[135:148] ~ dmnorm(zero[135:148],K11) 
+  K11 <- S11[1:14,1:14] * lambda[12] 
+
+  ## prior for s(year):country.R11... 
+  b[149:162] ~ dmnorm(zero[149:162],K12) 
+  K12 <- S12[1:14,1:14] * lambda[13] 
+
+  ## prior for s(year):country.R12... 
+  b[163:176] ~ dmnorm(zero[163:176],K13) 
+  K13 <- S13[1:14,1:14] * lambda[14] 
+
+  ## prior for s(year):country.R13... 
+  b[177:190] ~ dmnorm(zero[177:190],K14) 
+  K14 <- S14[1:14,1:14] * lambda[15] 
+
+  ## prior for s(year):country.R14... 
+  b[191:204] ~ dmnorm(zero[191:204],K15) 
+  K15 <- S15[1:14,1:14] * lambda[16] 
+
+  ## prior for s(year):country.R15... 
+  b[205:218] ~ dmnorm(zero[205:218],K16) 
+  K16 <- S16[1:14,1:14] * lambda[17] 
+
+  ## prior for s(year):country.R16... 
+  b[219:232] ~ dmnorm(zero[219:232],K17) 
+  K17 <- S17[1:14,1:14] * lambda[18] 
+
+  ## prior for s(year):country.R17... 
+  b[233:246] ~ dmnorm(zero[233:246],K18) 
+  K18 <- S18[1:14,1:14] * lambda[19] 
+
+  ## prior for s(year):country.R18... 
+  b[247:260] ~ dmnorm(zero[247:260],K19) 
+  K19 <- S19[1:14,1:14] * lambda[20] 
+
+
+  ## prior for s(country.R)... 
+  for(i in c(261:278)) { b[i] ~ dnorm(0, lambda[21]) }
+
+
+
+    ## smoothing parameter prior
+    for(i in 1:21) {
+    lambda[i] ~ dgamma(.05,.005)
+    #rho[i] <- log(lambda[i])
+    }
+
+    tau_y <- 1/pow(sigma_y, 2)
+    sigma_y ~ dgamma(3, 2)
+
+ 
+  ###########################################
+  #Prior for dispersion of 'observed' flows
+  ###########################################
+  for(i in 1:4){
+    tau[i] <- 1/pow(sigma[i], 2)
+    sigma[i] ~ dgamma(3, 2)
+  }
+  constraint0 ~ dinterval(tau[1] - tau[2], 0)
+  constraint1 ~ dinterval(tau[2] - tau[3], 0)
+  constraint2 ~ dinterval(tau[3] - tau[4], 0)
+}
