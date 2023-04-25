@@ -10,8 +10,6 @@
 
 This repository contains data and code implementing the methodology proposed in our paper, in addition to selected outputs. It contains three folders:
 
-# **data**, which input data
-
-# **code**, which includes JAGS code
-
-# **output**, which comprises the estimated true flows
+**data**, which input data
+**code**, which includes JAGS code
+**output**, which comprises the estimated true flows
