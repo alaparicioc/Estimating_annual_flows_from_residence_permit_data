@@ -8,10 +8,10 @@
 
 <sup>*</sup> *Corresponding author: andrea.apariciocastro@manchester.ac.uk*
 
-This repository contains data and code implementing the methodology proposed in our paper, in addition to selected outputs. It contains three folders and the following files:
+This repository contains data and code implementing the methodology proposed in our paper, in addition to selected outputs. It contains three folders:
 
-## **data**
+# **data**, which input data
 
-## **code**
+# **code**, which includes JAGS code
 
-## **output**
+# **output**, which comprises the estimated true flows
