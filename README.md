@@ -1,4 +1,4 @@
-# Harmonising South American residence permit data through a hierarchical Bayesian model, 2000-2020
+# Harmonising South American residence permit data through a hierarchical Bayesian model, 2000-2019
 
 [Andrea Aparicio-Castro](https://www.research.manchester.ac.uk/portal/andrea.apariciocastro.html)<sup>1*</sup>, [Arkadiusz Wiśniowski](https://www.research.manchester.ac.uk/portal/a.wisniowski.html)<sup>1</sup>, [Francisco Rowe](http://www.franciscorowe.com)[[`@fcorowe`](http://twitter.com/fcorowe)]<sup>2</sup>
 
